@@ -2,13 +2,25 @@ mod country;
 mod printer;
 use country::Country;
 use printer::Printer;
-use std::error::Error;
+use std::{cmp::Ordering, error::Error};
+use structopt::StructOpt;
 
 use crate::country::CountryDTO;
 
 const URL: &str = "https://restcountries.eu/rest/v2/all";
 
-struct SortOptions {}
+#[derive(StructOpt, Debug)]
+enum SortBy {
+    Name,
+    Population,
+    Area,
+}
+
+#[derive(StructOpt, Debug)]
+struct SortOptions {
+    #[structopt(subcommand)]
+    sort_by: Option<SortBy>,
+}
 
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn Error>> {
@@ -32,8 +44,14 @@ async fn main() -> Result<(), Box<dyn Error>> {
         .map(Country::from)
         .collect();
 
-    //     let sort_options = SortOptions {};
-    //     sort_countries_by(&mut countries, &sort_options);
+    let sort_options = match SortOptions::from_args_safe() {
+        Ok(options) => options,
+        Err(e) => {
+            eprintln!("{}", e);
+            panic!()
+        }
+    };
+    sort_countries_by(&mut countries, &sort_options);
 
     Printer::print_table(&countries);
     println!();
@@ -45,5 +63,17 @@ async fn main() -> Result<(), Box<dyn Error>> {
 }
 
 fn sort_countries_by(countries: &mut [Country], options: &SortOptions) {
-    todo!()
+    if let Some(sort) = &options.sort_by {
+        match sort {
+            SortBy::Name => countries.sort_by_key(|c| c.name.clone()),
+            SortBy::Population => countries.sort_by_key(|c| c.population),
+            SortBy::Area => countries.sort_by(|a, b| {
+                if a.area < b.area {
+                    Ordering::Less
+                } else {
+                    Ordering::Greater
+                }
+            }),
+        };
+    }
 }

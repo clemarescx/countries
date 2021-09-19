@@ -8,12 +8,8 @@ impl Printer {
     pub fn print_table(countries: &[Country]) {
         let format_info = format_info(countries);
         let formatted_header = format_header(&format_info);
-        // let table_header = format!("|{:^width$}|", "name", width = name_width + 1);
         let row_separator: String = "-".repeat(formatted_header.len());
-        let formatted_countries = countries
-            .into_iter()
-            //     .map(|c| format!("| {:<width$}|", c.name, width = name_width));
-            .map(|c| format_row(c, &format_info));
+        let formatted_countries = countries.into_iter().map(|c| format_row(c, &format_info));
         println!("{}", row_separator);
         println!("{}", formatted_header);
         for row in formatted_countries {
@@ -94,6 +90,7 @@ fn format_info(countries: &[Country]) -> FormatInfo {
         region,
         area,
         population,
+        ..
     } in countries
     {
         name_width = name_width.max(name.len());
