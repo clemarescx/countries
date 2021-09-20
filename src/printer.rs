@@ -56,7 +56,7 @@ impl Printer {
             languages,
         } = countries_per_lang;
         let formatted_header = format!(
-            "| {0:^l_width$} | {1:^c_width$} | {2:^p_width$.0} |",
+            "| {0:^l_width$} | {1:^c_width$} | {2:^p_width$} |",
             "languages",
             "countries",
             "population",
