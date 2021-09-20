@@ -1,6 +1,6 @@
 use std::cmp::Ordering;
 
-use crate::country::Country;
+use crate::{country::Country, language_table::LanguageTable};
 
 pub struct Printer;
 
@@ -46,6 +46,59 @@ impl Printer {
         );
 
         Ok(())
+    }
+
+    pub fn print_languages(countries_per_lang: &LanguageTable) {
+        let LanguageTable {
+            countries_column_width,
+            languages_column_width,
+            population_column_width,
+            languages,
+        } = countries_per_lang;
+        let formatted_header = format!(
+            "| {0:^l_width$} | {1:^c_width$} | {2:^p_width$.0} |",
+            "languages",
+            "countries",
+            "population",
+            l_width = languages_column_width,
+            c_width = countries_column_width,
+            p_width = population_column_width
+        );
+        let row_separator: String = "-".repeat(formatted_header.len());
+        println!("{}", row_separator);
+        println!("{}", formatted_header);
+        println!("{}", row_separator);
+        for (language, countries_pop) in languages {
+            let (countries, pop): (Vec<String>, Vec<u64>) = countries_pop.iter().cloned().unzip();
+            let total_pop: u64 = pop.into_iter().sum();
+            let mut countries_iter = countries.into_iter();
+
+            if let Some(first_country) = countries_iter.next() {
+                println!(
+                    "| {0:<l_width$} | {1:<c_width$} | {2:<p_width$.1} |",
+                    language,
+                    first_country,
+                    total_pop as f64 / 1_000_000.0,
+                    l_width = languages_column_width,
+                    c_width = countries_column_width,
+                    p_width = population_column_width
+                )
+            }
+
+            for country in countries_iter {
+                println!(
+                    "| {0:<l_width$} | {1:<c_width$} | {2:<p_width$.0} |",
+                    "",
+                    country,
+                    "",
+                    l_width = languages_column_width,
+                    c_width = countries_column_width,
+                    p_width = population_column_width
+                )
+            }
+
+            println!("{}", row_separator);
+        }
     }
 }
 fn get_avg_population(countries: &[Country]) -> f64 {

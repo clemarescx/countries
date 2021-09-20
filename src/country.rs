@@ -6,12 +6,12 @@ pub struct CountryDTO {
     pub region: String,
     pub area: Option<f32>,
     pub population: u64,
-    pub languages : Vec<Language>
+    pub languages: Vec<Language>,
 }
 
 #[derive(Default, Deserialize)]
 pub struct Language {
-    name: String
+    pub name: String,
 }
 
 impl From<CountryDTO> for Country {
@@ -21,7 +21,7 @@ impl From<CountryDTO> for Country {
             name: dto.name,
             region: dto.region,
             population: dto.population,
-            languages: dto.languages
+            languages: dto.languages,
         }
     }
 }
@@ -32,5 +32,5 @@ pub struct Country {
     pub region: String,
     pub area: f32,
     pub population: u64,
-    pub languages : Vec<Language>
+    pub languages: Vec<Language>,
 }

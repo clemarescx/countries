@@ -1,11 +1,12 @@
 mod country;
+mod language_table;
 mod printer;
 use country::Country;
 use printer::Printer;
 use std::{cmp::Ordering, error::Error};
 use structopt::StructOpt;
 
-use crate::country::CountryDTO;
+use crate::{country::CountryDTO, language_table::LanguageTable};
 
 const URL: &str = "https://restcountries.eu/rest/v2/all";
 
@@ -59,6 +60,9 @@ async fn main() -> Result<(), Box<dyn Error>> {
         Err(e) => eprint!("error printing summary: {}", e),
         _ => {}
     }
+    let language_table = LanguageTable::from_countries(&countries);
+    Printer::print_languages(&language_table);
+
     Ok(())
 }
 
