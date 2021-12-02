@@ -25,10 +25,19 @@ struct SortOptions {
 
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn Error>> {
+    let sort_options = match SortOptions::from_args_safe() {
+        Ok(options) => options,
+        Err(e) => {
+            eprintln!("{}", e);
+            return Ok(());
+        }
+    };
+
     let client = reqwest::Client::builder()
         .build()
         .expect("the reqwest client should be built");
 
+    println!("Querying {}", URL);
     let response = client
         .get(URL)
         .send()
