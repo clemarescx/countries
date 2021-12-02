@@ -8,7 +8,7 @@ use structopt::StructOpt;
 
 use crate::{country::CountryDTO, language_table::LanguageTable};
 
-const URL: &str = "https://restcountries.eu/rest/v2/all";
+const URL: &str = "https://restcountries.com/v2/all";
 
 #[derive(StructOpt, Debug)]
 enum SortBy {
