@@ -45,20 +45,12 @@ async fn main() -> Result<(), Box<dyn Error>> {
         .map(Country::from)
         .collect();
 
-    let sort_options = match SortOptions::from_args_safe() {
-        Ok(options) => options,
-        Err(e) => {
-            eprintln!("{}", e);
-            panic!()
-        }
-    };
     sort_countries_by(&mut countries, &sort_options);
 
     Printer::print_table(&countries);
     println!();
-    match Printer::print_summary(&countries) {
-        Err(e) => eprint!("error printing summary: {}", e),
-        _ => {}
+    if let Err(e) = Printer::print_summary(&countries) {
+        eprint!("error printing summary: {}", e)
     }
     let language_table = LanguageTable::from_countries(&countries);
     Printer::print_languages(&language_table);

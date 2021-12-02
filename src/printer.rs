@@ -9,7 +9,7 @@ impl Printer {
         let format_info = format_info(countries);
         let formatted_header = format_header(&format_info);
         let row_separator: String = "-".repeat(formatted_header.len());
-        let formatted_countries = countries.into_iter().map(|c| format_row(c, &format_info));
+        let formatted_countries = countries.iter().map(|c| format_row(c, &format_info));
         println!("{}", row_separator);
         println!("{}", formatted_header);
         for row in formatted_countries {
